@@ -1,13 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import HiDPICanvas from '../utils/HiDPICanvas';
-import { paint, getBlob } from '../lib/avatarCanvas';
+import { paint, getBlob, getMousePos } from '../lib/avatarCanvas';
 
 class AvatarEditor extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
-      imageSrc: ''
+      imageSrc: '',
+      imageRatio: 0,
+      scaling: false,
+      moving: false
     }
     this.handleSave = this.handleSave.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
@@ -18,11 +21,9 @@ class AvatarEditor extends Component {
   }
 
   componentDidMount() {
-    
     const {
       canvas
     } = this.refs;
-
     const {
       width,
       height
@@ -39,7 +40,7 @@ class AvatarEditor extends Component {
       before: () => {console.log('before')},
       canvas,
       after: () => {console.log('after')}
-    })
+    });
 
     const image = document.createElement('img');
     image.setAttribute('src', blob);
@@ -56,11 +57,12 @@ class AvatarEditor extends Component {
     const {
       canvas
     } = this.refs;
-
     const {
       target: image
     } = e;
-
+    this.setState({
+      imageRatio: image.width / image.height
+    })
     paint({
       canvas,
       image,
@@ -70,16 +72,36 @@ class AvatarEditor extends Component {
     });
   }
 
-  handleMouseMove(e) {
+  handleScale(mousePos) {
 
+  }
+
+  handleMove(mousePos) {
+
+  }
+
+  handleMouseMove(e) {
+    const mouse = getMousePos(e);
+    const {
+      scaling,
+      moving,
+    } = this.state;
+    if (scaling) {
+      handleScale(mouse);
+    } else if (moving) {
+      handleMove(mouse);
+    }
   }
 
   handleMouseDown(e) {
-    
+    const mouse = getMousePos(e);
   }
 
   handleMouseUp(e) {
-    
+    this.setState({
+      scaling: false,
+      moving: false
+    });
   }
 
   render() {
@@ -112,7 +134,9 @@ class AvatarEditor extends Component {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
         />
-        <img src={imageSrc} onLoad={handleFileLoad} width="0" height="0" />
+        { imageSrc &&
+          <img src={imageSrc} onLoad={handleFileLoad} width="0" height="0" />
+        }
         <br />
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleSave}>Save</button>

@@ -3,7 +3,7 @@ export default ({
   maskPos = { x:0, y:0 },
   maskRadius = 100,
   maskFeather = 0
-}) => { 
+}) => {
   if (!ctx) return;
   /// create off-screen temporary canvas where we draw in the shadow
   var temp = document.createElement('canvas');

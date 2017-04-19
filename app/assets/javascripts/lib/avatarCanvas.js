@@ -39,7 +39,48 @@ const getBlob = ({
   return blob;
 }
 
+const getMouseToCanvasCoords = ({
+  canvas, 
+  clientX,
+  clientY
+}) => {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: clientX - rect.left,
+    y: clientY - rect.top
+  };
+};
+
+const getMousePos = (e) => {
+  const {
+    target: canvas,
+    clientX,
+    clientY
+  } = e;
+  const mouse = getMouseToCanvasCoords({
+    canvas, 
+    clientX,
+    clientY
+  });
+  return mouse;
+}
+
+const move = (mouse) => {
+  //  Set the XY coords
+  var x = mouse.x - offsetX;
+  var y = mouse.y - offsetY;
+  //  Constain XY position top left
+  x = x < 0 ? boundingBox.x : x;
+  y = y < 0 ? boundingBox.y : y;
+  //  Constain XY position bottom right
+  x = (x + boundingBox.width) > canvas.width ? boundingBox.x : x;
+  y = (y + boundingBox.height) > canvas.height ? boundingBox.y : y;
+  //  Paint the canvas
+  return { x: x, y: y };
+};
+
 export {
   paint,
-  getBlob
-}
+  getBlob,
+  getMousePos
+};
