@@ -7,6 +7,7 @@
   "repository": "",
   "scripts": {
     "run:dev": "webpack-dev-server",
+    "run:build": "webpack build",
     "test": "NODE_ENV=testing karma start --single-run",
     "test:watch": "NODE_ENV=testing karma start"
   },

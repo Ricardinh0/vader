@@ -15,7 +15,6 @@ const bundle = function(app) {
 module.exports = {
   context: path.resolve(__dirname, './app/assets/javascripts/'),
   entry: {
-    'avatar-editor': bundle('./AvatarEditor/AvatarEditor'),
     'index': bundle('./')
   },
   resolve: {
