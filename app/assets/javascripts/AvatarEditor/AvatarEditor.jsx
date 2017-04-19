@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import HiDPICanvas from '../utils/HiDPICanvas';
+import { paint, getBlob } from '../lib/avatarCanvas';
 
 class AvatarEditor extends Component {
   
@@ -11,6 +12,9 @@ class AvatarEditor extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
     this.handleFileLoad = this.handleFileLoad.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
   componentDidMount() {
@@ -27,9 +31,18 @@ class AvatarEditor extends Component {
   }
 
   handleSave(e) {
-    return;
+    const {
+      canvas
+    } = this.refs;
+
+    const blob = getBlob({
+      before: () => {console.log('before')},
+      canvas,
+      after: () => {console.log('after')}
+    })
+
     const image = document.createElement('img');
-    image.setAttribute('src', this.getBlob());
+    image.setAttribute('src', blob);
     document.body.appendChild(image);
   }
 
@@ -40,48 +53,33 @@ class AvatarEditor extends Component {
   }
 
   handleFileLoad(e) {
-    this.paintCanvas({
-      x:0,
-      y:0,
-      width:200,
-      height:200,
-      image: e.target
-    })
-  }
-
-  paintCanvas(params) {
     const {
       canvas
     } = this.refs;
 
-    const ctx = canvas.getContext('2d');
-    //
-    const temp = params || {};
-    //
-    const x = temp.x;
-    const y = temp.y;
-    const width = temp.width;
-    const height = temp.height;
-    const image = temp.image;
-    //  Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //  Setup styles
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'red';
-    //  Draw image
-    ctx.drawImage(image, x, y, width, height);
-  };
+    const {
+      target: image
+    } = e;
 
-  getBlob() {
-    const canvas = this.refs.canvas;
-    //  Paint canvas sans bounding box
-    paintCanvas({ noBoundingBox: true });
-    //  Set blob
-    var blob = canvas.toDataURL();
-    //  Paint canvas with bounding box and anchors
-    paintCanvas();
-    //  Return blob
-    return blob;
+    paint({
+      canvas,
+      image,
+      imagePos: { x:0, y:0 },
+      width:200,
+      height:200,
+    });
+  }
+
+  handleMouseMove(e) {
+
+  }
+
+  handleMouseDown(e) {
+    
+  }
+
+  handleMouseUp(e) {
+    
   }
 
   render() {
@@ -89,7 +87,10 @@ class AvatarEditor extends Component {
     const {
       handleSave,
       handleFileChange,
-      handleFileLoad
+      handleFileLoad,
+      handleMouseMove,
+      handleMouseDown,
+      handleMouseUp
     } = this;
 
     const {
@@ -103,7 +104,14 @@ class AvatarEditor extends Component {
 
     return (
       <div>
-        <canvas ref="canvas" width={width} height={height}/>
+        <canvas 
+          ref="canvas" 
+          width={width} 
+          height={height}
+          onMouseMove={handleMouseMove}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+        />
         <img src={imageSrc} onLoad={handleFileLoad} width="0" height="0" />
         <br />
         <input type="file" onChange={handleFileChange} />
