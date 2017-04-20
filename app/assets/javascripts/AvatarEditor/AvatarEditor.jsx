@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import HiDPICanvas from '../utils/HiDPICanvas';
-import { paint, getBlob, getMousePos } from '../lib/avatarCanvas';
+import { paint, getBlob, getMousePos, getAction } from '../lib/avatarCanvas';
 
 class AvatarEditor extends Component {
   
@@ -94,7 +94,8 @@ class AvatarEditor extends Component {
   }
 
   handleMouseDown(e) {
-    const mouse = getMousePos(e);
+    const action = getAction(getMousePos(e));
+    console.log(action);
   }
 
   handleMouseUp(e) {
