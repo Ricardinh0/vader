@@ -1,42 +1,23 @@
 import drawMask from '../utils/drawMask'
-
-const anchorWidth = 10;
-const anchorOffset = anchorWidth / 2;
-const boundingBox = ((obj = {
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0
-}) => {
-  let boundingBox = obj;
-  return {
-    get: () => boundingBox,
-    set: (obj = {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0
-    }) => {
-      boundingBox = obj;
-      return boundingBox;
-    }
-  }
-})();
+import * as constant from '../AvatarEditor/constants/constants'
 
 const paint = ({
   canvas,
   image,
-  imagePos = { x:0, y:0 },
-  width = 200,
-  height = 200,
-  maskPos = { x:width/2, y:height/2 },
-  maskRadius = width/2,
-  maskFeather = 0,
+  anchor,
   noBoundingBox = false
 }) => {
   if (!canvas) return;
+  const {
+    target,
+    x,
+    y,
+    width,
+    height
+  } = image;
   //
   const ctx = canvas.getContext('2d');
+  const anchorOffset = anchor.width/2;
   //  Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   //  Setup styles
@@ -44,31 +25,19 @@ const paint = ({
   ctx.strokeStyle = 'red';
   //  Draw image
   if (image) {
-    ctx.drawImage(image, imagePos.x, imagePos.y, width, height);
+    ctx.drawImage(target, x, y, width, height);
     //
-    drawMask({
-      ctx, 
-      maskPos, 
-      maskRadius,
-      maskFeather
-    });
+    drawMask({ ctx });
     //
     if ( noBoundingBox === undefined || !noBoundingBox ) {
       //  Draw bounding box
-      ctx.strokeRect(imagePos.x, imagePos.y, width, height);
+      ctx.strokeRect(x, y, width, height);
       //  Draw anchors
-      ctx.strokeRect(imagePos.x - anchorOffset, imagePos.y - anchorOffset, anchorWidth, anchorWidth);
-      ctx.strokeRect(imagePos.x + width - anchorOffset, imagePos.y - anchorOffset, anchorWidth, anchorWidth);
-      ctx.strokeRect(imagePos.x + width - anchorOffset, imagePos.y + height - anchorOffset, anchorWidth, anchorWidth);
-      ctx.strokeRect(imagePos.x - anchorOffset, imagePos.y + height - anchorOffset, anchorWidth, anchorWidth);
+      ctx.strokeRect(x - anchorOffset, y - anchorOffset, anchor.width, anchor.width);
+      ctx.strokeRect(x + width - anchorOffset, y - anchorOffset, anchor.width, anchor.width);
+      ctx.strokeRect(x + width - anchorOffset, y + height - anchorOffset, anchor.width, anchor.width);
+      ctx.strokeRect(x - anchorOffset, y + height - anchorOffset, anchor.width, anchor.width);
     }
-    //
-    boundingBox.set({ 
-      x: imagePos.x,
-      y: imagePos.y,
-      width: width,
-      height: height
-    })
   }
 };
 
@@ -109,69 +78,124 @@ const getMousePos = e => {
   return mouse;
 }
 
-const getAnchor = (obj = {
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0
-}) => {
+const getAnchor = image => {
   return {
+    width: 10,
     topLeft: {
-      x: obj.x,
-      y: obj.y,
+      x: image.x,
+      y: image.y,
       opposite: 'bottomRight'
     },
     topRight: {
-      x: obj.x + obj.width, 
-      y: obj.y,
+      x: image.x + image.width, 
+      y: image.y,
       opposite: 'bottomLeft'
     },
     bottomRight: {
-      x: obj.x + obj.width,
-      y: obj.y + obj.height,
+      x: image.x + image.width,
+      y: image.y + image.height,
       opposite: 'topLeft'
     },
     bottomLeft: {
-      x: obj.x,
-      y: obj.y + obj.height,
+      x: image.x,
+      y: image.y + image.height,
       opposite: 'topRight'
     }
   };
 }
 
-const getAction = (mouse) => {
-  const box = boundingBox.get();
-  const anchor = getAnchor(box);
+const getAction = (mousePos, image, anchor) => {
   for(var key in anchor){
-    var areaRelativeToBox = (mouse.x - anchor[key].x - anchorOffset) * (mouse.y - anchor[key].y - anchorOffset);
-    if(areaRelativeToBox > 0 && areaRelativeToBox < Math.pow(anchorWidth, 2)) {
+    var areaRelativeToBox = (mousePos.x - anchor[key].x - (anchor.width/2)) * (mousePos.y - anchor[key].y - (anchor.width/2));
+    if(areaRelativeToBox > 0 && areaRelativeToBox < Math.pow(anchor.width, 2)) {
       //  Return the type
-      return 'scale';
+      return {
+        type: 'scaling',
+        anchorHeld: key,
+        anchorOpposite: anchor[key].opposite
+      };
     }
   }
-  if ( mouse.x > box.x && mouse.x < ( box.x + box.width ) && mouse.y > box.y && mouse.y < ( box.y + box.height ) ) {
+  if ( mousePos.x > image.x && mousePos.x < ( image.x + image.width ) && mousePos.y > image.y && mousePos.y < ( image.y + image.height ) ) {
     //  Return the type
-    return 'move';
+    return {
+      type: 'moving',
+      offSet: {
+        x: mousePos.x - image.x,
+        y: mousePos.y - image.y
+      }
+    };
   }
-  return false;
+  return {
+    type: false
+  };
 };
 
-const move = mouse => {
+const move = ({
+  mousePos,
+  canvas,
+  image,
+  offSet
+}) => {
   //  Set the XY coords
-  var x = mouse.x - offsetX;
-  var y = mouse.y - offsetY;
+  let x = mousePos.x - offSet.x;
+  let y = mousePos.y - offSet.y;
   //  Constain XY position top left
-  x = x < 0 ? boundingBox.x : x;
-  y = y < 0 ? boundingBox.y : y;
+  x = x < 0 ? image.x : x;
+  y = y < 0 ? image.y : y;
   //  Constain XY position bottom right
-  x = (x + boundingBox.width) > canvas.width ? boundingBox.x : x;
-  y = (y + boundingBox.height) > canvas.height ? boundingBox.y : y;
+  x = (x + image.width) > canvas.width ? image.x : x;
+  y = (y + image.height) > canvas.height ? image.y : y;
   //  Paint the canvas
   return { x: x, y: y };
 };
 
+const scale = ({
+  mousePos,
+  image,
+  anchor,
+  anchorOpposite,
+  anchorHeld,
+  ratio
+}) => {
+  //  Set the XY coords
+  let {
+    x,
+    y,
+    width,
+    height
+  } = image;
+  //
+  width = Math.abs(anchor[anchorOpposite].x - mousePos.x);
+  height = ratio <= 1 ? (width * ratio) : (width / ratio);
+  //
+  if ( anchorHeld === 'topLeft' ) {
+    x = anchor[anchorOpposite].x - width;
+    y = anchor[anchorOpposite].y - height;
+  }
+  //
+  if ( anchorHeld === 'topRight' ) {
+    x = anchor[anchorOpposite].x;
+    y = anchor[anchorOpposite].y - height;
+  }
+  //
+  if ( anchorHeld === 'bottomLeft' ) {
+    x = anchor[anchorOpposite].x - width;
+    y = anchor[anchorOpposite].y;
+  }
+  //  Paint the canvas
+  return { 
+    x: x, 
+    y: y, 
+    width: width, 
+    height: height 
+  };
+};
+
 export {
   paint,
+  move,
+  scale,
   getBlob,
   getMousePos,
   getAnchor,

@@ -1,7 +1,10 @@
 export default ({
   ctx, 
-  maskPos = { x:0, y:0 },
   maskRadius = 100,
+  maskPos = { 
+    x: maskRadius, 
+    y: maskRadius 
+  },
   maskFeather = 0
 }) => {
   if (!ctx) return;

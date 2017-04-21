@@ -1,20 +1,23 @@
 import React, { Component, PropTypes } from 'react';
 import HiDPICanvas from '../utils/HiDPICanvas';
-import { paint, getBlob, getMousePos, getAction } from '../lib/avatarCanvas';
+import AvatarImage from './components/AvatarImage/AvatarImage'
+import { paint, move, scale, getBlob, getMousePos, getAction, getAnchor } from '../lib/avatarCanvas';
 
 class AvatarEditor extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
+      image: undefined,
       imageSrc: '',
       imageRatio: 0,
       scaling: false,
-      moving: false
+      moving: false,
+      offSet: {x:0,y:0}
     }
     this.handleSave = this.handleSave.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
-    this.handleFileLoad = this.handleFileLoad.bind(this);
+    this.handleImage = this.handleImage.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
@@ -31,71 +34,112 @@ class AvatarEditor extends Component {
     HiDPICanvas(canvas, width, height);
   }
 
-  handleSave(e) {
-    const {
-      canvas
-    } = this.refs;
-
-    const blob = getBlob({
-      before: () => {console.log('before')},
-      canvas,
-      after: () => {console.log('after')}
-    });
-
-    const image = document.createElement('img');
-    image.setAttribute('src', blob);
-    document.body.appendChild(image);
-  }
-
   handleFileChange(e) {
     this.setState({
       imageSrc: URL.createObjectURL(e.target.files[0])
     });
   }
 
-  handleFileLoad(e) {
+  handleImage(e, image) {
     const {
       canvas
     } = this.refs;
-    const {
-      target: image
-    } = e;
     this.setState({
-      imageRatio: image.width / image.height
-    })
+      image: image,
+    });
+    const anchor = getAnchor(image);
     paint({
       canvas,
       image,
-      imagePos: { x:0, y:0 },
-      width:200,
-      height:200,
+      anchor
     });
   }
 
   handleScale(mousePos) {
+    const {
+      canvas
+    } = this.refs;
+    const {
+      image,
+      anchorHeld,
+      anchorOpposite
+    } = this.state;
+    const anchor = getAnchor(image);
+    const ratio = image.width / image.height;
+    const position = scale({
+      mousePos,
+      image,
+      anchor,
+      anchorOpposite,
+      anchorHeld,
+      ratio
+    });
 
+    image.x = position.x;
+    image.y = position.y;
+    image.width = position.width;
+    image.height = position.height;
+
+    paint({
+      canvas,
+      image,
+      anchor
+    });
   }
 
   handleMove(mousePos) {
+    const {
+      canvas
+    } = this.refs;
+    const {
+      image,
+      offSet
+    } = this.state;
+    const position = move({
+      mousePos,
+      canvas,
+      image,
+      offSet
+    });
 
+    image.x = position.x;
+    image.y = position.y;
+
+    const anchor = getAnchor(image);
+
+    paint({
+      canvas,
+      image,
+      anchor
+    });
   }
 
   handleMouseMove(e) {
-    const mouse = getMousePos(e);
+    const mousePos = getMousePos(e);
     const {
       scaling,
       moving,
     } = this.state;
     if (scaling) {
-      handleScale(mouse);
+      this.handleScale(mousePos);
     } else if (moving) {
-      handleMove(mouse);
+      this.handleMove(mousePos);
     }
   }
 
   handleMouseDown(e) {
-    const action = getAction(getMousePos(e));
-    console.log(action);
+    const {
+      image
+    } = this.state;
+    if (!image) return;
+    const anchor = getAnchor(image);
+    const action = getAction(getMousePos(e), image, anchor);
+    this.setState({
+      [action.type]: true,
+      offSet: action.offSet || {x:0,y:0},
+      anchorHeld: action.anchorHeld || '',
+      anchorOpposite: action.anchorOpposite || '',
+    });
   }
 
   handleMouseUp(e) {
@@ -105,12 +149,47 @@ class AvatarEditor extends Component {
     });
   }
 
+  handleSave(e) {
+    const {
+      canvas
+    } = this.refs;
+    const {
+      image
+    } = this.state;
+
+    const anchor = getAnchor(image);
+
+    const blob = getBlob({
+      before: () => {
+        paint({
+          canvas,
+          image,
+          anchor,
+          noBoundingBox: true
+        });
+      },
+      canvas,
+      after: () => {
+        paint({
+          canvas,
+          image,
+          anchor
+        });
+      }
+    });
+
+    const ele = document.createElement('img');
+    ele.width = canvas.width / 2;
+    ele.setAttribute('src', blob);
+    document.body.appendChild(ele);
+  }
+
   render() {
 
     const {
       handleSave,
       handleFileChange,
-      handleFileLoad,
+      handleImage,
       handleMouseMove,
       handleMouseDown,
       handleMouseUp
@@ -136,7 +215,10 @@ class AvatarEditor extends Component {
           onMouseUp={handleMouseUp}
         />
         { imageSrc &&
-          <img src={imageSrc} onLoad={handleFileLoad} width="0" height="0" />
+          <AvatarImage 
+            imageSrc={imageSrc} 
+            handleImage={handleImage}
+          />
         }
         <br />
         <input type="file" onChange={handleFileChange} />

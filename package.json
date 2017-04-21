@@ -47,5 +47,8 @@
     "webpack": "^2.3.2",
     "webpack-dev-server": "2",
     "why-did-you-update": "^0.0.8"
+  },
+  "dependencies": {
+    "babel-preset-stage-2": "^6.24.1"
   }
 }
