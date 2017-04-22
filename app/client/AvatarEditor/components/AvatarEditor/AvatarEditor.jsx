@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import HiDPICanvas from '../utils/HiDPICanvas';
-import AvatarImage from './components/AvatarImage/AvatarImage'
-import { paint, move, scale, getBlob, getMousePos, getAction, getAnchor } from '../lib/avatarCanvas';
+import HiDPICanvas from '../../utils/HiDPICanvas';
+import { paint, move, scale, getBlob, getMousePos, getAction, getAnchor } from '../../lib/avatarCanvas';
+import AvatarImage from '../AvatarImage/AvatarImage';
 
 class AvatarEditor extends Component {
   

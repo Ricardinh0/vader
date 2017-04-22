@@ -11,9 +11,8 @@ const bundle = function(app) {
   const files = vendors.concat([app]);
   return files;
 };
-
 module.exports = {
-  context: path.resolve(__dirname, './app/assets/javascripts/'),
+  context: path.resolve(__dirname, './app/client/'),
   entry: {
     'index': bundle('./')
   },
@@ -29,10 +28,7 @@ module.exports = {
       {
         test: /.(js|jsx)?$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
-        query: {
-          presets: ['es2015', 'react', 'stage-2']
-        }
+        exclude: /node_modules/
       },
       {
         test: /\.scss$/,
@@ -45,9 +41,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: '[name].bundle.js',
+    sourceMapFilename: '[name].bundle.js.map',
     publicPath: '/dist'
-  },
-  devServer: {
-    contentBase: path.resolve(__dirname, './app')
   }
 };

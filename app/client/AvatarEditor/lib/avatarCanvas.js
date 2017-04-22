@@ -1,5 +1,4 @@
-import drawMask from '../utils/drawMask'
-import * as constant from '../AvatarEditor/constants/constants'
+import drawMask from '../utils/drawMask';
 
 const paint = ({
   canvas,
