@@ -6,8 +6,8 @@
   "main": "",
   "repository": "",
   "scripts": {
-    "run:dev": "$(yarn bin)/webpack-dev-server --config webpack.dev.config.js",
-    "run:build": "$(yarn bin)/webpack --config webpack.build.config.js",
+    "run:dev": "NODE_ENV=dev $(yarn bin)/webpack-dev-server --config webpack.dev.config.js",
+    "run:build": "NODE_ENV=prod $(yarn bin)/webpack --config webpack.build.config.js",
     "test": "NODE_ENV=testing karma start --single-run",
     "test:watch": "NODE_ENV=testing karma start"
   },
