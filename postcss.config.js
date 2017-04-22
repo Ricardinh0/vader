@@ -4,8 +4,8 @@ module.exports = {
     require('postcss-autoreset')({
       reset: {
         all: 'initial',
-        'box-sizing': 'border-box'
-      }
-    })
-  ]
+        'box-sizing': 'border-box',
+      },
+    }),
+  ],
 };

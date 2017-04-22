@@ -9,7 +9,8 @@
     "run:dev": "NODE_ENV=dev $(yarn bin)/webpack-dev-server --config webpack.dev.config.js",
     "run:build": "NODE_ENV=prod $(yarn bin)/webpack --config webpack.build.config.js",
     "test": "NODE_ENV=testing karma start --single-run",
-    "test:watch": "NODE_ENV=testing karma start"
+    "test:watch": "NODE_ENV=testing karma start",
+    "lint": "$(yarn bin)/eslint .js,.jsx app/client/**"
   },
   "eslintConfig": {
     "env": {
@@ -58,5 +59,12 @@
     "webpack": "^2.3.2",
     "webpack-dev-server": "2",
     "why-did-you-update": "^0.0.8"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3"
   }
 }

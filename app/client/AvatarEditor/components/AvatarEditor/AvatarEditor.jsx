@@ -196,7 +196,7 @@ class AvatarEditor extends Component {
       handleMouseUp
     } = this;
 
-    const {
+    const { 
       width,
       height
     } = this.props;
