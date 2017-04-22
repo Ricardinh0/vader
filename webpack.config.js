@@ -31,11 +31,31 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.scss$/,
-        loader: ExtractTextPlugin.extract(
-          'css!sass!postcss'
-        )
-      },
+        test: /\.(scss|sass)$/,
+        loader: ExtractTextPlugin.extract({
+          fallback: [{
+            loader: 'style-loader',
+          }],
+          use: [
+            {
+              loader: "css-loader"
+            },
+            {
+              loader: "sass-loader"
+            },
+            {
+              loader: "postcss-loader",
+              options: {
+                plugins: () => {
+                  return [
+                    require('autoprefixer')({ browsers: 'last 2 versions' })
+                  ]
+                }
+              }
+            }
+          ]
+        })
+      }
     ],
   },
   output: {

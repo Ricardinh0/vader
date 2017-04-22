@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import HiDPICanvas from '../../utils/HiDPICanvas';
 import { paint, move, scale, getBlob, getMousePos, getAction, getAnchor } from '../../lib/avatarCanvas';
 import AvatarImage from '../AvatarImage/AvatarImage';
+import styles from './styles';
 
 class AvatarEditor extends Component {
   
@@ -205,7 +206,7 @@ class AvatarEditor extends Component {
     } = this.state;
 
     return (
-      <div>
+      <div className="AvatarEditor">
         <canvas 
           ref="canvas" 
           width={width} 
