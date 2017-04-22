@@ -206,9 +206,10 @@ class AvatarEditor extends Component {
     } = this.state;
 
     return (
-      <div className="AvatarEditor">
+      <div>
         <canvas 
-          ref="canvas" 
+          ref="canvas"
+          className={styles.canvas}
           width={width} 
           height={height}
           onMouseMove={handleMouseMove}

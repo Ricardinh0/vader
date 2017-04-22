@@ -17,7 +17,7 @@
       "node": true
     }
   },
-  "devDependencies": {
+  "dependencies": {
     "autoprefixer": "6.7.2",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.1",
@@ -28,6 +28,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "chai": "^3.5.0",
     "compression-webpack-plugin": "^0.4.0",
+    "css-loader": "^0.28.0",
     "es5-shim": "^4.5.9",
     "eslint": "^3.18.0",
     "eslint-loader": "^1.7.0",
@@ -39,23 +40,23 @@
     "karma-webpack": "^2.0.3",
     "mocha": "^3.2.0",
     "mocha-loader": "^1.1.1",
+    "node-sass": "^4.5.2",
+    "postcss": "^5.2.17",
+    "postcss-autoreset": "^1.2.1",
     "postcss-loader": "1.2.2",
+    "postcss-modules": "^0.6.4",
+    "postcss-sass": "^0.1.0",
+    "precss": "^1.4.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.0",
+    "sass-loader": "^6.0.3",
     "sinon": "^2.1.0",
+    "style-loader": "^0.16.1",
     "webpack": "^2.3.2",
     "webpack-dev-server": "2",
     "why-did-you-update": "^0.0.8"
-  },
-  "dependencies": {
-    "css-loader": "^0.28.0",
-    "node-sass": "^4.5.2",
-    "postcss": "^5.2.17",
-    "precss": "^1.4.0",
-    "sass-loader": "^6.0.3",
-    "style-loader": "^0.16.1"
   }
 }

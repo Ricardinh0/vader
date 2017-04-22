@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const vendors = [
   'babel-polyfill',
@@ -38,7 +37,11 @@ module.exports = {
           }],
           use: [
             {
-              loader: "css-loader"
+              loader: "css-loader",
+              options: {
+                localIdentName: '[folder]__[local]__[hash:base64]',
+                modules: true
+              }
             },
             {
               loader: "sass-loader"
@@ -48,7 +51,13 @@ module.exports = {
               options: {
                 plugins: () => {
                   return [
-                    require('autoprefixer')({ browsers: 'last 2 versions' })
+                    require('autoprefixer')({ browsers: 'last 2 versions' }),
+                    require('postcss-autoreset')({
+                      reset: {
+                        all: 'initial',
+                        'box-sizing': 'border-box'
+                      }
+                    })
                   ]
                 }
               }

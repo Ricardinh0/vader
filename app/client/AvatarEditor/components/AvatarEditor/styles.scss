@@ -1,3 +1,14 @@
-.AvatarEditor {
-  padding: 10px;
+$brand-gray-xxx-dark:             #3e3f3e;
+$brand-gray-xx-dark:              #58595b;
+$brand-gray-x-dark:               #808285;
+$brand-gray-dark:                 #a7a9ac;
+$brand-gray:                      #cccccc;
+$brand-gray-light:                #dddddd;
+$brand-gray-x-light:              #eeeeee;
+
+.canvas {
+  border: 1px solid $brand-gray;
+  &:hover {
+    border-color: $brand-gray-xx-dark;
+  }
 }
