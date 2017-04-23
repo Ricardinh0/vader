@@ -42,9 +42,11 @@ class AvatarEditor extends Component {
   }
 
   handleImage(e, image) {
-    const {
-      canvas
-    } = this.refs;
+    const { canvas } = this.refs;
+    const { width } = canvas;
+    const ratio = image.width / image.height;
+    image.width = (width / 2) - 20;
+    image.height = (ratio <= 1 ? ((width / 2) * ratio) : ((width / 2) / ratio)) - 20;
     this.setState({
       image: image,
     });
@@ -57,14 +59,8 @@ class AvatarEditor extends Component {
   }
 
   handleScale(mousePos) {
-    const {
-      canvas
-    } = this.refs;
-    const {
-      image,
-      anchorHeld,
-      anchorOpposite
-    } = this.state;
+    const { canvas } = this.refs;
+    const { image, anchorHeld, anchorOpposite } = this.state;
     const anchor = getAnchor(image);
     const ratio = image.width / image.height;
     const position = scale({
@@ -207,24 +203,29 @@ class AvatarEditor extends Component {
 
     return (
       <div>
-        <canvas 
-          ref="canvas"
-          className={styles.canvas}
-          width={width} 
-          height={height}
-          onMouseMove={handleMouseMove}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-        />
+        <div className={styles.wrap}>
+          <canvas 
+            ref="canvas"
+            className={styles.canvas}
+            width={width} 
+            height={height}
+            onMouseMove={handleMouseMove}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+          />
+        </div>
         { imageSrc &&
           <AvatarImage 
             imageSrc={imageSrc} 
             handleImage={handleImage}
           />
         }
-        <br />
-        <input type="file" onChange={handleFileChange} />
+        <div>
+        <span>
+          <input type="file" onChange={handleFileChange} />
+        </span> 
         <button onClick={handleSave}>Save</button>
+        </div>
       </div>
     );
   }

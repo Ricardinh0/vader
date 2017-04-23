@@ -13,8 +13,8 @@ const AvatarImage = ({
       target: image,
       width: image.width,
       height: image.height,
-      x: 0,
-      y: 0,
+      x: 10,
+      y: 10,
     });
   }
 

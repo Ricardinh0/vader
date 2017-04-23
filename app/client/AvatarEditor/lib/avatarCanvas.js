@@ -7,13 +7,7 @@ const paint = ({
   noBoundingBox = false
 }) => {
   if (!canvas) return;
-  const {
-    target,
-    x,
-    y,
-    width,
-    height
-  } = image;
+  const { target, x, y, width, height } = image;
   //
   const ctx = canvas.getContext('2d');
   const anchorOffset = anchor.width/2;
@@ -21,21 +15,36 @@ const paint = ({
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   //  Setup styles
   ctx.lineWidth = 1;
-  ctx.strokeStyle = 'red';
+  ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
   //  Draw image
   if (image) {
     ctx.drawImage(target, x, y, width, height);
     //
-    drawMask({ ctx });
+    drawMask({
+      ctx,
+      maskPos: {
+        x: (canvas.width / 2) / 2,
+        y: (canvas.height / 2) / 2,
+      }
+    });
     //
-    if ( noBoundingBox === undefined || !noBoundingBox ) {
+    if (noBoundingBox === undefined || !noBoundingBox) {
       //  Draw bounding box
       ctx.strokeRect(x, y, width, height);
       //  Draw anchors
-      ctx.strokeRect(x - anchorOffset, y - anchorOffset, anchor.width, anchor.width);
-      ctx.strokeRect(x + width - anchorOffset, y - anchorOffset, anchor.width, anchor.width);
-      ctx.strokeRect(x + width - anchorOffset, y + height - anchorOffset, anchor.width, anchor.width);
-      ctx.strokeRect(x - anchorOffset, y + height - anchorOffset, anchor.width, anchor.width);
+      ctx.beginPath();
+      ctx.arc(x, y, anchor.width, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x + width, y, anchor.width, anchor.width, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x + width, y + height, anchor.width, anchor.width, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(x, y + height, anchor.width, anchor.width, 0, 2 * Math.PI);
+      ctx.fill();
     }
   }
 };
@@ -49,10 +58,10 @@ const getBlob = ({
   const blob = canvas.toDataURL();
   after();
   return blob;
-}
+};
 
 const getMouseToCanvasCoords = ({
-  canvas, 
+  canvas,
   clientX,
   clientY
 }) => {
@@ -63,19 +72,19 @@ const getMouseToCanvasCoords = ({
   };
 };
 
-const getMousePos = e => {
+const getMousePos = (e) => {
   const {
     target: canvas,
     clientX,
     clientY
   } = e;
   const mouse = getMouseToCanvasCoords({
-    canvas, 
+    canvas,
     clientX,
     clientY
   });
   return mouse;
-}
+};
 
 const getAnchor = image => {
   return {

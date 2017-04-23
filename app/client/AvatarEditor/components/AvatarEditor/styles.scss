@@ -6,9 +6,15 @@ $brand-gray:                      #cccccc;
 $brand-gray-light:                #dddddd;
 $brand-gray-x-light:              #eeeeee;
 
+.wrap {
+  background: white;
+  display: inline-block;
+}
+
 .canvas {
+  display: block;
   border: 1px solid $brand-gray;
   &:hover {
-    border-color: $brand-gray-xx-dark;
+    border: 1px dotted $brand-gray-xx-dark;
   }
 }
