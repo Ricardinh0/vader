@@ -1,2 +1,14 @@
-.AvatarEditor {
-  padding: 10px; }
+.AvatarEditor__wrap__2OXXyNqWt00PmvfGaUdHed,
+.AvatarEditor__canvas__gDtKPiBuQta6ed30dd0tg {
+  all: initial;
+  box-sizing: border-box; }
+
+.AvatarEditor__wrap__2OXXyNqWt00PmvfGaUdHed {
+  background: white;
+  display: inline-block; }
+
+.AvatarEditor__canvas__gDtKPiBuQta6ed30dd0tg {
+  display: block;
+  border: 1px solid #cccccc; }
+  .AvatarEditor__canvas__gDtKPiBuQta6ed30dd0tg:hover {
+    border: 1px dotted #58595b; }
