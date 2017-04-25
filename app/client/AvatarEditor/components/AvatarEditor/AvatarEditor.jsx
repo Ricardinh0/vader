@@ -45,6 +45,7 @@ class AvatarEditor extends Component {
     const { canvas } = this.refs;
     const { width } = canvas;
     const ratio = image.width / image.height;
+
     image.width = (width / 2) - 20;
     image.height = (ratio <= 1 ? ((width / 2) * ratio) : ((width / 2) / ratio)) - 20;
     this.setState({

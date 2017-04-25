@@ -28,6 +28,7 @@ const paint = ({
         y: (canvas.height / 2) / 2,
       }
     });
+    debugger;
     //
     if (noBoundingBox === undefined || !noBoundingBox) {
       //  Draw bounding box
