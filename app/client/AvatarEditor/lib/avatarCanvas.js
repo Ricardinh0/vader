@@ -28,7 +28,6 @@ const paint = ({
         y: (canvas.height / 2) / 2,
       }
     });
-    debugger;
     //
     if (noBoundingBox === undefined || !noBoundingBox) {
       //  Draw bounding box
@@ -150,8 +149,8 @@ const move = ({
   let x = mousePos.x - offSet.x;
   let y = mousePos.y - offSet.y;
   //  Constain XY position top left
-  x = x < 0 ? image.x : x;
-  y = y < 0 ? image.y : y;
+  //x = x < 0 ? image.x : x;
+  //y = y < 0 ? image.y : y;
   //  Constain XY position bottom right
   x = (x + image.width) > canvas.width ? image.x : x;
   y = (y + image.height) > canvas.height ? image.y : y;
@@ -175,8 +174,13 @@ const scale = ({
     height
   } = image;
   //
-  width = Math.abs(anchor[anchorOpposite].x - mousePos.x);
-  height = ratio <= 1 ? (width * ratio) : (width / ratio);
+  if (!image.portrait) {
+    width = Math.abs(anchor[anchorOpposite].x - mousePos.x);
+    height = ratio <= 1 ? (width * ratio) : (width / ratio);
+  } else {
+    height = Math.abs(anchor[anchorOpposite].y - mousePos.y);
+    width = ratio <= 1 ? (height * ratio) : (height / ratio);
+  }
   //
   if ( anchorHeld === 'topLeft' ) {
     x = anchor[anchorOpposite].x - width;

@@ -9,12 +9,14 @@ const AvatarImage = ({
     const {
       target: image
     } = e;
+    
     handleImage(e, {
       target: image,
       width: image.width,
       height: image.height,
       x: 10,
       y: 10,
+      portrait: image.height > image.width
     });
   }
 

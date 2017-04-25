@@ -9,9 +9,7 @@ class AvatarEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: undefined,
       imageSrc: '',
-      imageRatio: 0,
       scaling: false,
       moving: false,
       offSet: {x:0,y:0}
@@ -44,13 +42,21 @@ class AvatarEditor extends Component {
   handleImage(e, image) {
     const { canvas } = this.refs;
     const { width } = canvas;
+
     const ratio = image.width / image.height;
 
-    image.width = (width / 2) - 20;
-    image.height = (ratio <= 1 ? ((width / 2) * ratio) : ((width / 2) / ratio)) - 20;
+    if (!image.portrait) {
+      image.width = (width / 2) - 20;
+      image.height = (ratio <= 1 ? ((width / 2) * ratio) : ((width / 2) / ratio)) - 20;
+    } else {
+      image.height = (width / 2) - 20;
+      image.width = (ratio <= 1 ? ((width / 2) * ratio) : ((width / 2) / ratio)) - 20;
+    }
+
     this.setState({
-      image: image,
+      image: image
     });
+
     const anchor = getAnchor(image);
     paint({
       canvas,
