@@ -6,6 +6,16 @@ import styles from './styles';
 
 class AvatarEditor extends Component {
   
+  static defaultProps = {
+    width: 200,
+    height: 200
+  };
+
+  static propTypes = {
+    width: PropTypes.string,
+    height: PropTypes.string
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -14,12 +24,6 @@ class AvatarEditor extends Component {
       moving: false,
       offSet: {x:0,y:0}
     }
-    this.handleSave = this.handleSave.bind(this);
-    this.handleFileChange = this.handleFileChange.bind(this);
-    this.handleImage = this.handleImage.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
   componentDidMount() {
@@ -33,13 +37,13 @@ class AvatarEditor extends Component {
     HiDPICanvas(canvas, width, height);
   }
 
-  handleFileChange(e) {
+  handleFileChange = e => {
     this.setState({
       imageSrc: URL.createObjectURL(e.target.files[0])
     });
   }
 
-  handleImage(e, image) {
+  handleImage = (e, image) => {
     const { canvas } = this.refs;
     const { width } = canvas;
 
@@ -65,7 +69,7 @@ class AvatarEditor extends Component {
     });
   }
 
-  handleScale(mousePos) {
+  handleScale = mousePos => {
     const { canvas } = this.refs;
     const { image, anchorHeld, anchorOpposite } = this.state;
     const anchor = getAnchor(image);
@@ -91,7 +95,7 @@ class AvatarEditor extends Component {
     });
   }
 
-  handleMove(mousePos) {
+  handleMove = mousePos => {
     const {
       canvas
     } = this.refs;
@@ -118,7 +122,7 @@ class AvatarEditor extends Component {
     });
   }
 
-  handleMouseMove(e) {
+  handleMouseMove = e => {
     const mousePos = getMousePos(e);
     const {
       scaling,
@@ -131,7 +135,7 @@ class AvatarEditor extends Component {
     }
   }
 
-  handleMouseDown(e) {
+  handleMouseDown = e => {
     const {
       image
     } = this.state;
@@ -146,14 +150,14 @@ class AvatarEditor extends Component {
     });
   }
 
-  handleMouseUp(e) {
+  handleMouseUp = e => {
     this.setState({
       scaling: false,
       moving: false
     });
   }
 
-  handleSave(e) {
+  handleSave = e => {
     const {
       canvas
     } = this.refs;

@@ -1,19 +1,18 @@
 const path = require('path');
-const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const vendors = [
   'babel-polyfill',
   'es5-shim/es5-shim',
   'es5-shim/es5-sham'
 ];
-const bundle = function(app) {
+const bundle = (app) => {
   const files = vendors.concat([app]);
   return files;
 };
 module.exports = {
   context: path.resolve(__dirname, './app/client/'),
   entry: {
-    'index': bundle('./')
+    index: bundle('./')
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css', '.scss'],
@@ -37,17 +36,17 @@ module.exports = {
           }],
           use: [
             {
-              loader: "css-loader",
+              loader: 'css-loader',
               options: {
                 localIdentName: '[folder]__[local]__[hash:base64]',
                 modules: true
               }
             },
             {
-              loader: "sass-loader"
+              loader: 'sass-loader'
             },
             {
-              loader: "postcss-loader"
+              loader: 'postcss-loader'
             }
           ]
         })
